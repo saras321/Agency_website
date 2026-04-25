@@ -23,8 +23,28 @@ export default function FreeAuditPopup() {
     sessionStorage.setItem("hasSeenAuditPopup", "true");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+
+    try {
+      await fetch("https://formsubmit.co/ajax/sarasdevi2005@gmail.com", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          businessName: data.businessName,
+          email: data.email,
+          _subject: "New Free Audit Request from Website!"
+        }),
+      });
+    } catch (error) {
+      console.error("Submission failed", error);
+    }
+
     setIsSubmitted(true);
     setTimeout(() => {
       handleClose();
@@ -65,15 +85,16 @@ export default function FreeAuditPopup() {
                     Get a Free Marketing Audit
                   </h3>
                   <p className="text-textMuted">
-                    Find out exactly why your competitors are outranking you and how to fix it. Valued at $500.
+                    Find out exactly why your competitors are outranking you and how to fix it.
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <input
-                      type="url"
-                      placeholder="Your Website URL"
+                      type="text"
+                      name="businessName"
+                      placeholder="Your Business Name"
                       required
                       className="w-full bg-background border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
                     />
@@ -81,6 +102,7 @@ export default function FreeAuditPopup() {
                   <div>
                     <input
                       type="email"
+                      name="email"
                       placeholder="Your Work Email"
                       required
                       className="w-full bg-background border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
